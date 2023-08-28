@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { ChangeEvent, useState, useEffect } from 'react';
+import { ChangeEvent, MouseEventHandler, useState, useEffect } from 'react';
 import { invoke } from '@tauri-apps/api/tauri'
 
 import DateTimePicker from 'react-datetime-picker'
@@ -50,6 +50,13 @@ export default function Home() {
     console.log(formData);
   };
 
+  // Used to test how to invoke multiple commands from Rust backend.
+  const handleSecondSubmit = (e: React.FormEvent) => {
+    console.log("2nd submit was clicked");
+    e.preventDefault();
+    invoke('test');
+  };
+
   // async function greet() {
   //   // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
   //   setGreetMsg(await invoke("trying_to_understand", { name }));
@@ -72,6 +79,8 @@ export default function Home() {
           {/* Hydration error for DataTimePicker */}
           {/* <DateTimePicker id="date-time-input" onChange={onChange} value={value}/> */}
           <button id="booking-submit-button" type="submit">Submit Form</button>
+
+          <button id="booking-submit-button" onClick={(e) => {handleSecondSubmit(e)}}>Submit Form</button>
         </div>
 
       </form>

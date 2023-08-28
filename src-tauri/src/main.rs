@@ -15,6 +15,11 @@ fn trying_to_understand() {
     println!("I was invoked from JS!");
 }
 
+#[tauri::command]
+fn test() {
+    println!("Testing multiple commands");
+}
+
 // async fn create_collection(client: &Client, db_name: &str, collection_name: &str) {
 //     let db = client.database(db_name);
 //     db.create_collection(collection_name, None).await;
@@ -66,7 +71,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 
     tauri::Builder::default()
-    .invoke_handler(tauri::generate_handler![trying_to_understand])
+    .invoke_handler(tauri::generate_handler![test, trying_to_understand])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
     
