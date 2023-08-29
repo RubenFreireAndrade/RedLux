@@ -80,7 +80,7 @@ export default function Home() {
           {/* <DateTimePicker id="date-time-input" onChange={onChange} value={value}/> */}
           <button id="booking-submit-button" type="submit">Submit Form</button>
 
-          <button id="booking-submit-button" onClick={(e) => {handleSecondSubmit(e)}}>Submit Form</button>
+          <button id="booking-submit-button" onClick={(e) => {/*handleSecondSubmit(e)*/}}>Submit Form</button>
         </div>
 
       </form>
