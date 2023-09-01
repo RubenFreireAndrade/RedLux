@@ -2,7 +2,6 @@ use std::env;
 use dotenv::dotenv;
 use mongodb::{Client, bson::doc};
 
-
 pub struct Database {
   //client_option: ClientOptions,
   //client: Client,

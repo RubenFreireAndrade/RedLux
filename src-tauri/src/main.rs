@@ -4,8 +4,6 @@
 mod db;
 
 use std::env;
-use dotenv::dotenv;
-use mongodb::Client;
 use mongodb::bson::doc;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
@@ -24,14 +22,18 @@ fn test() {
     println!("Testing multiple commands");
 }
 
-// #[tauri::command]
-// fn listen_submit(form_data: serde_json::Value) {
-//     println!("incoming data: {}", form_data);
-    
-//     // if !form_data.to_string().is_empty() {
-//         //     //create_document(database, db_name, collection_name, full_name, location_of_collection, location_of_destination, phone_number, important_information)
-//         // };
-// }
+#[tauri::command]
+async fn listen_submit(client: &Client, database: &Database, form_data: serde_json::Value) {
+    println!("incoming data: {}", form_data);
+
+    let full_name = form_data["full_name"].to_string();
+    let location_of_collection = form_data["location_of_collection"].to_string();
+    let location_of_destination = form_data["location_of_destination"].to_string();
+    let phone_number = form_data["phone_number"].to_string();
+    let important_information = form_data["important_information"].to_string();
+
+    db::Database::create_document(client, database, &full_name, &location_of_collection, &location_of_destination, &phone_number, &important_information).await;
+}
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -39,10 +41,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let connected_database = db::Database::connect_to_database(&database).await;
 
+    
+
     //let create_customer = db::Database::create_document(&connected_database, &database, "Rubs", "location_of_collection", "location_of_destination", "phone_number", "important_information").await;
 
     tauri::Builder::default()
-    .invoke_handler(tauri::generate_handler![test, trying_to_understand /*listen_submit*/])
+    .invoke_handler(tauri::generate_handler![test, trying_to_understand, listen_submit])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
     
