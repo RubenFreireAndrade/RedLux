@@ -29,20 +29,14 @@ impl Database {
     let connected_client = match Client::with_uri_str(client.get_database_uri()).await {
       Ok(connected_client) => {
         println!("Connected to MongoDB");
-        //Ok(connected_client)
         connected_client
       }
       Err(e) => {
-        //println!("Error connecting to MongoDB: {}", e);
-        //Err(e.into())
-        panic!("{}", e)
+        panic!("Error connecting to MongoDB: {}", e)
       }
     };
     connected_client
   }
-
-  // let connected_client = Client::with_uri_str(client.get_database_uri()).await.expect("Failed to connect to MongoDB");
-  // connected_client
           
   pub async fn create_document(client: &Client, database: &Database, full_name: &str, location_of_collection: &str, location_of_destination: &str, phone_number: &str, important_information: &str) -> Result<String, String> {
     let database_name = client.database(database.get_database_name().as_str());
