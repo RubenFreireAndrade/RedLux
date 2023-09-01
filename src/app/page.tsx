@@ -14,12 +14,6 @@ import { error } from 'console';
 
 export default function Home() {
 
-  // function handleSubmit() {
-  //   axiosLib.post('http://localhost:1420/booking')
-  //   .then(res => console.log(res))
-  //   .catch(err => console.log(err));
-  // }
-
   type ValuePiece = Date | null;
   type Value = ValuePiece | [ValuePiece, ValuePiece];
   

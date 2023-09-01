@@ -1,42 +1,18 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+mod db;
+
 use std::env;
 use dotenv::dotenv;
-use mongodb::bson::doc;
 use mongodb::Client;
+use mongodb::bson::doc;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 // #[tauri::command]
 // fn trying_to_understand(name: &str) -> String {
 //     format!("Hello, {}! You've been greeted from Rust!", name)
 // }
-
-struct Database {
-    //client_option: ClientOptions,
-    client: Client,
-    database_name: String,
-    collection_name: String,
-}
-
-impl Database {
-    fn get_client(&self) -> Client {
-        self.client.clone()
-    }
-
-    // fn get_client_option(&self) -> ClientOptions {
-    //     self.client_option.clone()
-    // }
-
-    fn get_database_name(&self) -> String {
-        self.database_name.clone()
-    }
-
-    fn get_collection_name(&self) -> String {
-        self.collection_name.clone()
-    }
-}
-
 
 #[tauri::command]
 fn trying_to_understand() {
@@ -48,85 +24,69 @@ fn test() {
     println!("Testing multiple commands");
 }
 
-#[tauri::command]
-async fn create_document(client: &Client, db_name: &str, collection_name: &str, full_name: &str, location_of_collection: &str, location_of_destination: &str, phone_number: &str, important_information: &str) -> Result<String, String> {
-    let db = client.database(db_name);
-    let collection = db.collection(collection_name);
+// #[tauri::command]
+// fn listen_submit(form_data: serde_json::Value) {
+//     println!("incoming data: {}", form_data);
+    
+//     // if !form_data.to_string().is_empty() {
+//         //     //create_document(database, db_name, collection_name, full_name, location_of_collection, location_of_destination, phone_number, important_information)
+//         // };
+// }
+    
+// async fn create_document(database: &Client, db_name: &str, collection_name: &str, full_name: &str, location_of_collection: &str, location_of_destination: &str, phone_number: &str, important_information: &str) -> Result<String, String> {
+//     let database_name = database.database(db_name);
+//     let collection = database_name.collection(collection_name);
 
-    let customer = doc! {
-        "full_name": full_name,
-        "location_of_collection": location_of_collection,
-        "location_of_destination": location_of_destination,
-        // "date_time_of_collection": "22/08/2023 | 22:00",
-        // "date_time_of_destination": "02/10/2023 | 03:00",
-        "phone_number": phone_number,
-        "important_information": important_information,
-    };
-
-    collection.insert_one(customer, None).await.unwrap();
-
-    Ok(("create_customer function was used").to_string())
-}
-
-#[tauri::command]
-fn listen_submit(form_data: serde_json::Value) {
-    println!("incoming data: {}", form_data);
-}
-
-// fn insert_document_test() {
-//     let document = doc! {
-//         "full_name": "Alice Smith",
-//         "location_of_collection": "London",
-//         "location_of_destination": "Gatwick",
-//         "date_time_of_collection": "22/08/2023 | 22:00",
-//         "date_time_of_destination": "02/10/2023 | 03:00",
-//         "phone_number": "909019283192",
-//         "important_information": "Call customer when close",
+//     let customer = doc! {
+//         "full_name": full_name,
+//         "location_of_collection": location_of_collection,
+//         "location_of_destination": location_of_destination,
+//         // "date_time_of_collection": "22/08/2023 | 22:00",
+//         // "date_time_of_destination": "02/10/2023 | 03:00",
+//         "phone_number": phone_number,
+//         "important_information": important_information,
 //     };
+
+//     collection.insert_one(customer, None).await.unwrap();
+
+//     Ok(("create_customer function was used").to_string())
 // }
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let database = db::Database::database_default();
 
-    dotenv().ok();
-    let mongo_username = env::var("MONGO_USERNAME").expect("MONGO_USERNAME was not found in .env");
-    let mongo_password = env::var("MONGO_PASSWORD").expect("MONGO_PASSWORD was not found in .env");
-
-    let database = Database {
-        client: Client::with_uri_str(format!("mongodb+srv://{mongo_username}:{mongo_password}@bookingform.woqmnkh.mongodb.net/")).await?,
-        database_name: "redlux".to_string(),
-        collection_name: "bookings".to_string(),
-    };
-
-    // THIS IS USED TO CONNECT TO MONGODB
-    // let client_options = ClientOptions::parse(format!("mongodb+srv://{mongo_username}:{mongo_password}@bookingform.woqmnkh.mongodb.net/")).await?;
-    // let client = match Client::with_options(client_options) {
-    //     Ok(client) => {
+    // let connected_database = match Client::with_uri_str(database.get_database_uri()).await {
+    //     Ok(connected_database) => {
     //         println!("Connected to MongoDB");
-    //         client
+    //         connected_database;
     //     }
     //     Err(e) => {
     //         println!("Error connecting to MongoDB: {}", e);
     //         return Ok(());
     //     }
     // };
-    
-    //create_document(&client, "redlux", "bookings", "Rubs").await?;
-    
 
+    let connected_database = db::Database::connect_to_database(&database).await;
 
-    // let desired_db = client.database("redlux");
-    //let desired_collection = db.collection("bookings");
+    //let create_customer = db::Database::create_document(&connected_database, &database, "Rubs", "location_of_collection", "location_of_destination", "phone_number", "important_information").await;
 
-    //let desired_collection = desired_db.collection::<Document>("bookings");
-    
-
-    //desired_collection.insert_one(insert_document, None).await?;
-
+    // THIS IS USED TO CONNECT TO MONGODB
+    // let client_options = ClientOptions::parse(format!("mongodb+srv://{mongo_username}:{mongo_password}@bookingform.woqmnkh.mongodb.net/")).await?;
+    // let client = match Client::with_options(client_options) {
+    //     Ok(connected_database) => {
+    //         println!("Connected to MongoDB");
+    //         connected_database
+    //     }
+    //     Err(e) => {
+    //         println!("Error connecting to MongoDB: {}", e);
+    //         return Ok(());
+    //     }
+    // };
 
 
     tauri::Builder::default()
-    .invoke_handler(tauri::generate_handler![test, trying_to_understand, listen_submit])
+    .invoke_handler(tauri::generate_handler![test, trying_to_understand /*listen_submit*/])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
     
