@@ -19,7 +19,6 @@ export default function Home() {
   
   const [value, onChange] = useState<Value>(new Date());
   
-  //const [greetMsg, setGreetMsg] = useState("");
   const [name, setName] = useState("");
 
   const [formData, setFormData] = useState({
