@@ -78,7 +78,9 @@ name = "app"
 version = "0.1.0"
 dependencies = [
  "dotenv",
+ "lazy_static",
  "mongodb",
+ "once_cell",
  "serde",
  "serde_json",
  "tauri",
