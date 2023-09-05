@@ -19,8 +19,6 @@ export default function Home() {
   
   const [value, onChange] = useState<Value>(new Date());
 
-  const [name, setName] = useState("");
-
   const [formData, setFormData] = useState({
     full_name: '',
     location_of_collection: '',
@@ -44,13 +42,6 @@ export default function Home() {
     console.log(formData);
 
     await invoke('listen_submit', { formData });
-  };
-
-  // Used to test how to invoke multiple commands from Rust backend.
-  const handleSecondSubmit = (e: React.FormEvent) => {
-    console.log("2nd submit was clicked");
-    e.preventDefault();
-    invoke('test');
   };
 
   return (
