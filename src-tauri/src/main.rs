@@ -12,11 +12,13 @@ async fn listen_submit(form_data: serde_json::Value) {
     println!("incoming data: {}", form_data);
 
     let customer_data = form_data::FormData {
-        full_name: form_data["full_name"].to_string(),
-        location_of_collection: form_data["location_of_collection"].to_string(),
-        location_of_destination: form_data["location_of_destination"].to_string(),
-        phone_number: form_data["phone_number"].to_string(),
-        important_information: form_data["important_information"].to_string(),
+        full_name: form_data["full_name"].as_str().unwrap().to_string(),
+        location_of_collection: form_data["location_of_collection"].as_str().unwrap().to_string(),
+        location_of_destination: form_data["location_of_destination"].as_str().unwrap().to_string(),
+        date_time_of_collection: form_data["date_time_of_collection"].as_str().unwrap().to_string(),
+        date_time_of_destination: form_data["date_time_of_destination"].as_str().unwrap().to_string(),
+        phone_number: form_data["phone_number"].as_str().unwrap().to_string(),
+        important_information: form_data["important_information"].as_str().unwrap().to_string(),
     };
 
     db::create_document(customer_data).await;

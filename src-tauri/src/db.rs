@@ -38,8 +38,8 @@ pub async fn create_document(form_data: form_data::FormData) {
       "full_name": form_data.full_name,
       "location_of_collection": form_data.location_of_collection,
       "location_of_destination": form_data.location_of_destination,
-      // "date_time_of_collection": "22/08/2023 | 22:00",
-      // "date_time_of_destination": "02/10/2023 | 03:00",
+      "date_time_of_collection": form_data.date_time_of_collection,
+      "date_time_of_destination": form_data.date_time_of_destination,
       "phone_number": form_data.phone_number,
       "important_information": form_data.important_information,
     };
